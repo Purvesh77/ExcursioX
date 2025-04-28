@@ -26,7 +26,7 @@ export default function App() {
         <Routes>
 
           {/* Dashboard Routes all elements are children of Dashboard */}
-          <Route element={<ProtectRoute><Dashboard /></ProtectRoute>}>
+          <Route element={<Dashboard />}>
             <Route path="/" element={<Body />} />
             <Route path="/hotel" element={<Hotel />} />
             <Route path="/Bookings" element={<BookingPortal />} />

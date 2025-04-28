@@ -15,7 +15,7 @@ Frontend will run at: http://localhost:5173
 
 
 ```bash
-cd client/server
+cd client/backend
 npm install
 npm run start
 ```
