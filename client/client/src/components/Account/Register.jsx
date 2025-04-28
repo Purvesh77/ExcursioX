@@ -2,6 +2,8 @@ import { Box, Button, Container, Flex, Image, PasswordInput, Popover, Progress, 
 import { useEffect, useState } from 'react'
 import { PhoneInput } from 'react-international-phone';
 import 'react-international-phone/style.css';
+import { useNavigate } from 'react-router-dom'; // add this
+
 
 import './Register.css'
 
@@ -57,6 +59,9 @@ const Register = () => {
   const [error, setError] = useState('');
 
   const dispatch = useDispatch();
+
+  const navigate = useNavigate(); // add this
+
   
   // console.log(companyId, firstName, lastName, email, password, phone);
 
@@ -90,15 +95,15 @@ const Register = () => {
     try {
       const res = await newRequest.post("/auth/register", { 
         companyId, firstName, lastName, email, password, phone
-       },
-       );
+      });
       
-      navigate("/")
+      navigate("/");
     } catch (err) {
-      setError(err.response.data);
-      console.log(err.response.data);
+      console.log("Register Error:", err);
+      setError(err?.response?.data || "Something went wrong. Please try again.");
     }
   };
+  
 
 
   return (

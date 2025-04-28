@@ -12,23 +12,27 @@ dotenv.config();
 
 
 export const register = async (req, res, next) => {
-    try {
-      const password = req.body.password;
-      const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(password, salt);
-  
-      const newUser = new User({
-        ...req.body,
-        password: hash,
-      });
-  
-      await newUser.save();
-      res.status(201).send("User has been created.");
-    } catch (err) {
-      next(err);
-    }
-  };
-  
+  try {
+    console.log("Register request received:", req.body); // 🔍 Debug
+    const password = req.body.password;
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
+
+    const newUser = new User({
+      ...req.body,
+      password: hash,
+    });
+
+    await newUser.save();
+    console.log("✅ User saved:", newUser.email); // 🔍 Debug
+
+    res.status(201).send("User has been created.");
+  } catch (err) {
+    console.error("❌ Registration error:", err); // 🔍 Debug
+    next(err);
+  }
+};
+
 export const login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -92,19 +96,19 @@ export const logout = async (req, res) => {
 
 
 /** GET: http://localhost:8080/api/generateOTP */
-export async function generateOTP(req,res){
+export async function generateOTP(req, res) {
   req.app.locals.OTP = otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
   res.status(201).send({ code: req.app.locals.OTP })
 }
 
 
 /** GET: http://localhost:8080/api/verifyOTP */
-export async function verifyOTP(req,res){
+export async function verifyOTP(req, res) {
   const { code } = req.query;
-  if(parseInt(req.app.locals.OTP) === parseInt(code)){
-      req.app.locals.OTP = null; // reset the OTP value
-      req.app.locals.resetSession = true; // start session for reset password
-      return res.status(201).send({ msg: 'Verify Successsfully!'})
+  if (parseInt(req.app.locals.OTP) === parseInt(code)) {
+    req.app.locals.OTP = null; // reset the OTP value
+    req.app.locals.resetSession = true; // start session for reset password
+    return res.status(201).send({ msg: 'Verify Successsfully!' })
   }
-  return res.status(400).send({ error: "Invalid OTP"});
+  return res.status(400).send({ error: "Invalid OTP" });
 }
